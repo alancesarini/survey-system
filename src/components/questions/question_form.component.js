@@ -20,11 +20,11 @@ export default class QuestionForm extends Component {
     ];
   }
 
-  handleClick(e) {
+  handleClick = e => {
     e.preventDefault();
     const history = createBrowserHistory({ forceRefresh: true });
     history.goBack();
-  }
+  };
 
   render() {
     let rangeDivs = "";
