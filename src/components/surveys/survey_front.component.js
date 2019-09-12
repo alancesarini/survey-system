@@ -59,7 +59,7 @@ export default class SurveyFront extends Component {
   getAllQuestions = async () => {
     const surveyUrl = this.props.match.params.surveyurl;
     try {
-      const res = await axios.get("http://localhost:5000/survey/" + surveyUrl);
+      const res = await axios.get("/survey/" + surveyUrl);
       this.setState({
         surveyName: res.data.name,
         questionsCounter: res.data.questions.length,
@@ -162,10 +162,7 @@ export default class SurveyFront extends Component {
 
       try {
         await axios.post(
-          "http://localhost:5000/survey/" +
-            surveyUrl +
-            "/" +
-            currentQuestionIndex,
+          "/survey/" + surveyUrl + "/" + currentQuestionIndex,
           results
         );
       } catch (e) {}
@@ -205,9 +202,7 @@ export default class SurveyFront extends Component {
       const surveyUrl = this.props.match.params.surveyurl;
 
       try {
-        const res = await axios.get(
-          "http://localhost:5000/survey/" + surveyUrl + "/id"
-        );
+        const res = await axios.get("/survey/" + surveyUrl + "/id");
         resultsId = res.data;
       } catch (e) {}
     } else {

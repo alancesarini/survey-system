@@ -38,13 +38,13 @@ export default class App extends Component {
       error: false,
       session: this.getSessionCookie(),
       surveys: [],
-      backendURL: "http://localhost:5000",
       surveyName: ""
     };
 
+    axios.defaults.baseURL = "http://localhost:5000";
+
     if (this.state.session) {
       this.state.axiosInstance = axios.create({
-        baseURL: this.state.backendURL,
         headers: { Authorization: "Bearer " + this.state.session.user_token }
       });
     }
@@ -86,7 +86,7 @@ export default class App extends Component {
         password: this.state.password
       };
       try {
-        res = await axios.post("http://localhost:5000/users/login", loginData);
+        res = await axios.post("/users/login", loginData);
       } catch (e) {
         this.setState({
           loading: false,
