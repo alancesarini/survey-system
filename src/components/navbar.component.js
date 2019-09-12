@@ -11,7 +11,7 @@ class Navbar extends Component {
 
   render() {
     const loginLink =
-      this.props.usertoken !== undefined ? (
+      this.props.usertoken !== "" ? (
         <Link to="/logout" className="nav-link">
           Logout
         </Link>
@@ -33,7 +33,7 @@ class Navbar extends Component {
       );
 
     const actionsMenu =
-      this.props.usertoken !== undefined ? (
+      this.props.usertoken !== "" ? (
         <li className="navbar-item">
           <Link to="/surveys" className="nav-link">
             Surveys
