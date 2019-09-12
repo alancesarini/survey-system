@@ -12,7 +12,7 @@ export default class SurveyNew extends Component {
     };
   }
 
-  history = createBrowserHistory({ forceRefresh: true });
+  history = createBrowserHistory();
 
   handleChange = e => {
     this.setState({
@@ -25,7 +25,7 @@ export default class SurveyNew extends Component {
     try {
       const res = await this.props.axios.post("/surveys", this.state);
       if (res.data) {
-        this.history.push("/surveys");
+        this.history.goBack();
       }
     } catch (e) {
       console.log(e);

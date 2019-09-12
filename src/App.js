@@ -49,7 +49,7 @@ export default class App extends Component {
     }
   }
 
-  history = createBrowserHistory({ forceRefresh: true });
+  history = createBrowserHistory();
 
   setLocalStorage = data => {
     localStorage.setItem("session", JSON.stringify(data));
@@ -93,17 +93,14 @@ export default class App extends Component {
           user_token: res.data.token,
           user_level: res.data.user.userlevel
         });
+        axios.defaults.headers.common["Authorization"] =
+          "Bearer " + res.data.token;
         this.setState({
           loading: false,
           session: this.getLocalStorage(),
-          axiosInstance: axios.create({
-            baseURL: this.state.backendURL,
-            headers: {
-              Authorization: "Bearer " + this.state.session.user_token
-            }
-          })
+          axiosInstance: axios.create()
         });
-        history.push("/");
+        history.replace("/surveys");
       }
     };
 
@@ -166,7 +163,7 @@ export default class App extends Component {
 
   LogoutHandler = ({ history }) => {
     this.setLocalStorage("session", null);
-    history.push("/login");
+    history.replace("/login");
 
     this.setState({
       email: "",
@@ -183,9 +180,9 @@ export default class App extends Component {
   ProtectedHandler = ({ history }) => {
     if (window.location.href.indexOf("/front/") === -1) {
       if (this.state.session.user_token === undefined) {
-        history.push("/login");
+        history.replace("/login");
       } else {
-        history.push("/surveys");
+        history.replace("/surveys");
       }
       return "";
     }

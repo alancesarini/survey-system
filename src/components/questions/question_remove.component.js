@@ -2,7 +2,7 @@ import { Component } from "react";
 import { createBrowserHistory } from "history";
 
 export default class QuestionRemove extends Component {
-  history = createBrowserHistory({ forceRefresh: true });
+  history = createBrowserHistory();
 
   componentDidMount = async () => {
     const surveyId = this.props.match.params.surveyid;
@@ -12,7 +12,7 @@ export default class QuestionRemove extends Component {
       await this.props.axios.delete(
         "/surveys/" + surveyId + "/questions/" + questionId
       );
-      this.history.push("/survey/" + surveyId + "/questions");
+      this.history.goBack();
     } catch (e) {
       console.log(e);
     }

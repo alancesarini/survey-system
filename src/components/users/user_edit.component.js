@@ -14,7 +14,7 @@ export default class UserEdit extends Component {
     };
   }
 
-  history = createBrowserHistory({ forceRefresh: true });
+  history = createBrowserHistory();
 
   componentDidMount = async () => {
     if (this.props.operation === "edit") {
@@ -51,7 +51,7 @@ export default class UserEdit extends Component {
         res = await this.props.axios.post("/users", this.state);
       }
       if (res.data) {
-        this.history.push("/users");
+        this.history.goBack();
       }
     } catch (e) {
       console.log(e);

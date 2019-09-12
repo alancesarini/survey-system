@@ -22,7 +22,7 @@ export default class QuestionForm extends Component {
 
   handleClick = e => {
     e.preventDefault();
-    const history = createBrowserHistory({ forceRefresh: true });
+    const history = createBrowserHistory();
     history.goBack();
   };
 

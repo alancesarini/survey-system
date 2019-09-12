@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { createBrowserHistory } from "history";
 import QuestionForm from "./question_form.component";
+import { Redirect } from "react-router-dom";
 
 export default class QuestionEdit extends Component {
   constructor() {
@@ -13,11 +14,12 @@ export default class QuestionEdit extends Component {
       question_text: "",
       min_value: 0,
       max_value: 0,
-      options: []
+      options: [],
+      redirect: null
     };
   }
 
-  history = createBrowserHistory({ forceRefresh: true });
+  history = createBrowserHistory();
 
   componentDidMount = async () => {
     if (this.props.operation === "edit") {
@@ -87,8 +89,6 @@ export default class QuestionEdit extends Component {
   handleRemoveOption = e => {
     e.preventDefault();
 
-    console.log(e.target);
-
     const index = e.target.name.replace("remove_option_", "");
     const options = [...this.state.options];
     options.splice(index, 1);
@@ -131,13 +131,14 @@ export default class QuestionEdit extends Component {
         res = await this.props.axios.post(url, data);
       }
       if (res.data) {
-        this.history.push("/survey/" + surveyId + "/questions");
+        this.setState({ redirect: "/survey/" + surveyId + "/questions" });
+        //this.history.push();
       }
     } catch (e) {}
   };
 
   render() {
-    return (
+    let component = (
       <QuestionForm
         data={this.state}
         change={this.handleChange}
@@ -147,5 +148,9 @@ export default class QuestionEdit extends Component {
         options={this.state.options}
       />
     );
+    if (this.state.redirect) {
+      component = <Redirect to={this.state.redirect} />;
+    }
+    return component;
   }
 }

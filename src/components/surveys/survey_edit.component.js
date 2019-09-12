@@ -12,7 +12,7 @@ export default class SurveyEdit extends Component {
     };
   }
 
-  history = createBrowserHistory({ forceRefresh: true });
+  history = createBrowserHistory();
 
   componentDidMount = async () => {
     if (this.props.operation === "edit") {
@@ -48,7 +48,7 @@ export default class SurveyEdit extends Component {
         res = await this.props.axios.post("/surveys", this.state);
       }
       if (res.data) {
-        this.history.push("/surveys");
+        this.history.goBack();
       }
     } catch (e) {
       console.log(e);
