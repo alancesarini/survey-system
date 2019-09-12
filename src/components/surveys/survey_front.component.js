@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import * as Cookies from "js-cookie";
 import axios from "axios";
 import QuestionFront from "../questions/question_front.component";
 import styles from "../frontoffice.module.css";
@@ -8,7 +7,7 @@ export default class SurveyFront extends Component {
   constructor(props) {
     super(props);
 
-    const session = this.getSessionCookie();
+    const session = this.getLocalStorage();
     const questionIndex = session.questionIndex || 0;
     const lastQuestion = session.lastQuestion || false;
 
@@ -41,19 +40,14 @@ export default class SurveyFront extends Component {
     });
   };
 
-  setSessionCookie = session => {
-    Cookies.remove("session");
-    Cookies.set("session", session, { expires: 14 });
+  setLocalStorage = data => {
+    localStorage.setItem("session", JSON.stringify(data));
   };
 
-  getSessionCookie = () => {
-    const sessionCookie = Cookies.get("session");
-
-    if (sessionCookie === undefined) {
-      return {};
-    } else {
-      return JSON.parse(sessionCookie);
-    }
+  getLocalStorage = () => {
+    return localStorage.getItem("session")
+      ? JSON.parse(localStorage.getItem("session"))
+      : {};
   };
 
   getAllQuestions = async () => {
@@ -122,7 +116,7 @@ export default class SurveyFront extends Component {
   handleStart = async e => {
     e.preventDefault();
 
-    this.setSessionCookie({
+    this.setLocalStorage({
       resultsId: this.state.resultsId,
       questionIndex: 1,
       lastQuestion: false
@@ -167,7 +161,7 @@ export default class SurveyFront extends Component {
         );
       } catch (e) {}
 
-      this.setSessionCookie({
+      this.setLocalStorage({
         resultsId: this.state.resultsId,
         questionIndex: questionIndex,
         lastQuestion: lastQuestion
@@ -196,7 +190,7 @@ export default class SurveyFront extends Component {
   };
 
   getResultsId = async () => {
-    const session = this.getSessionCookie();
+    const session = this.getLocalStorage();
     let resultsId = "";
     if (!session.resultsId) {
       const surveyUrl = this.props.match.params.surveyurl;

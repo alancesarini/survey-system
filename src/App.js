@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Router, Switch, Route } from "react-router";
 import { createBrowserHistory } from "history";
-import * as Cookies from "js-cookie";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,7 +35,7 @@ export default class App extends Component {
       password: "",
       loading: false,
       error: false,
-      session: this.getSessionCookie(),
+      session: this.getLocalStorage(),
       surveys: [],
       surveyName: ""
     };
@@ -52,19 +51,14 @@ export default class App extends Component {
 
   history = createBrowserHistory({ forceRefresh: true });
 
-  setSessionCookie = session => {
-    Cookies.remove("session");
-    Cookies.set("session", session, { expires: 14 });
+  setLocalStorage = data => {
+    localStorage.setItem("session", JSON.stringify(data));
   };
 
-  getSessionCookie = () => {
-    const sessionCookie = Cookies.get("session");
-
-    if (sessionCookie === undefined) {
-      return {};
-    } else {
-      return JSON.parse(sessionCookie);
-    }
+  getLocalStorage = () => {
+    return localStorage.getItem("session")
+      ? JSON.parse(localStorage.getItem("session"))
+      : {};
   };
 
   handleChange = e => {
@@ -95,13 +89,13 @@ export default class App extends Component {
       }
 
       if (res) {
-        this.setSessionCookie({
+        this.setLocalStorage({
           user_token: res.data.token,
           user_level: res.data.user.userlevel
         });
         this.setState({
           loading: false,
-          session: this.getSessionCookie(),
+          session: this.getLocalStorage(),
           axiosInstance: axios.create({
             baseURL: this.state.backendURL,
             headers: {
@@ -171,7 +165,7 @@ export default class App extends Component {
   };
 
   LogoutHandler = ({ history }) => {
-    Cookies.remove("session");
+    this.setLocalStorage("session", null);
     history.push("/login");
 
     this.setState({
