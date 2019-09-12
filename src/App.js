@@ -44,9 +44,9 @@ export default class App extends Component {
     axios.defaults.baseURL = "http://localhost:5000";
 
     if (this.state.session) {
-      this.state.axiosInstance = axios.create({
-        headers: { Authorization: "Bearer " + this.state.session.user_token }
-      });
+      axios.defaults.headers.common["Authorization"] =
+        "Bearer " + this.state.session.user_token;
+      this.state.axiosInstance = axios.create();
     }
   }
 
