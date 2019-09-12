@@ -28,6 +28,18 @@ export default class Surveys extends Component {
     }
   };
 
+  removeSurvey = async surveyId => {
+    try {
+      await this.props.axios.delete("/surveys/" + surveyId);
+      const updatedSurveys = this.state.surveys.filter(
+        survey => survey._id !== surveyId
+      );
+      this.setState({ surveys: updatedSurveys });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   render() {
     const surveys = this.state.surveys.map((survey, index) => {
       return (
@@ -46,9 +58,9 @@ export default class Surveys extends Component {
               <FontAwesomeIcon icon={faEdit} title="Edit survey" />
             </Link>
 
-            <Link to={"/survey/remove/" + survey._id}>
+            <button onClick={() => this.removeSurvey(survey._id)}>
               <FontAwesomeIcon icon={faTrashAlt} title="Delete survey" />
-            </Link>
+            </button>
 
             <Link to={"/survey/" + survey._id + "/questions/"}>
               <FontAwesomeIcon icon={faEye} title="View questions" />

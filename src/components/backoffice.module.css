@@ -94,6 +94,13 @@
 	padding-right: 15px;
 }
 
+.actionCell button {
+	border: none;
+	background: transparent;
+	color: #007bff;
+	padding: 0 15px 0 0;
+}
+
 @media screen and (max-width: 768px) {
   .cell {
     display: block;

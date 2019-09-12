@@ -11,15 +11,12 @@ import Navbar from "./components/navbar.component";
 
 import Users from "./components/users/users.component";
 import UserEdit from "./components/users/user_edit.component";
-import UserRemove from "./components/users/user_remove.component";
 
 import Surveys from "./components/surveys/surveys.component";
 import SurveyEdit from "./components/surveys/survey_edit.component";
-import SurveyRemove from "./components/surveys/survey_remove.component";
 
 import Questions from "./components/questions/questions.component";
 import QuestionEdit from "./components/questions/question_edit.component";
-import QuestionRemove from "./components/questions/question_remove.component";
 
 import Results from "./components/results/results.component";
 
@@ -233,13 +230,6 @@ export default class App extends Component {
                     )}
                   />
                   <Route
-                    path="/user/remove/:id"
-                    exact
-                    render={props => (
-                      <UserRemove {...props} axios={this.state.axiosInstance} />
-                    )}
-                  />
-                  <Route
                     path="/users/new"
                     exact
                     render={props => (
@@ -264,16 +254,6 @@ export default class App extends Component {
                       <SurveyEdit
                         {...props}
                         operation="edit"
-                        axios={this.state.axiosInstance}
-                      />
-                    )}
-                  />
-                  <Route
-                    path="/survey/remove/:id"
-                    exact
-                    render={props => (
-                      <SurveyRemove
-                        {...props}
                         axios={this.state.axiosInstance}
                       />
                     )}
@@ -304,16 +284,6 @@ export default class App extends Component {
                       <QuestionEdit
                         {...props}
                         operation="edit"
-                        axios={this.state.axiosInstance}
-                      />
-                    )}
-                  />
-                  <Route
-                    path="/survey/:surveyid/question/remove/:questionid"
-                    exact
-                    render={props => (
-                      <QuestionRemove
-                        {...props}
                         axios={this.state.axiosInstance}
                       />
                     )}

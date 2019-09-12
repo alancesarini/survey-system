@@ -26,6 +26,16 @@ export default class Users extends Component {
     }
   };
 
+  removeUser = async userId => {
+    try {
+      await this.props.axios.delete("/users/" + userId);
+      const updatedUsers = this.state.users.filter(user => user._id !== userId);
+      this.setState({ users: updatedUsers });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   render() {
     const users = this.state.users.map((user, index) => {
       return (
@@ -36,9 +46,9 @@ export default class Users extends Component {
               <FontAwesomeIcon icon={faEdit} title="Edit user" />
             </Link>
 
-            <Link to={"/user/remove/" + user._id}>
+            <button onClick={() => this.removeUser(user._id)}>
               <FontAwesomeIcon icon={faTrashAlt} title="Delete user" />
-            </Link>
+            </button>
           </div>
         </div>
       );

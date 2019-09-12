@@ -30,6 +30,20 @@ export default class Questions extends Component {
     }
   };
 
+  removeQuestion = async (surveyId, questionId) => {
+    try {
+      await this.props.axios.delete(
+        "/surveys/" + surveyId + "/questions/" + questionId
+      );
+      const updatedQuestions = this.state.questions.filter(
+        question => question._id !== questionId
+      );
+      this.setState({ questions: updatedQuestions });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   render() {
     const surveyId = this.props.match.params.surveyid;
     const questions = this.state.questions.map((question, index) => {
@@ -41,11 +55,9 @@ export default class Questions extends Component {
               <FontAwesomeIcon icon={faEdit} title="Edit question" />
             </Link>
 
-            <Link
-              to={"/survey/" + surveyId + "/question/remove/" + question._id}
-            >
+            <button onClick={() => this.removeQuestion(surveyId, question._id)}>
               <FontAwesomeIcon icon={faTrashAlt} title="Delete question" />
-            </Link>
+            </button>
           </div>
         </div>
       );
