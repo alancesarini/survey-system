@@ -42,7 +42,6 @@ export default class App extends Component {
     if (this.state.session) {
       axios.defaults.headers.common["Authorization"] =
         "Bearer " + this.state.session.user_token;
-      this.state.axiosInstance = axios.create();
     }
   }
 
@@ -94,8 +93,7 @@ export default class App extends Component {
           "Bearer " + res.data.token;
         this.setState({
           loading: false,
-          session: this.getLocalStorage(),
-          axiosInstance: axios.create()
+          session: this.getLocalStorage()
         });
         history.replace("/surveys");
       }
@@ -213,98 +211,52 @@ export default class App extends Component {
                 <Switch>
                   <Route path="/login" exact component={this.LoginHandler} />
                   <Route path="/logout" exact component={this.LogoutHandler} />
-                  <Route
-                    path="/users"
-                    exact
-                    render={props => <Users axios={this.state.axiosInstance} />}
-                  />
+                  <Route path="/users" component={Users} exact />
                   <Route
                     path="/user/edit/:id"
                     exact
-                    render={props => (
-                      <UserEdit
-                        {...props}
-                        operation="edit"
-                        axios={this.state.axiosInstance}
-                      />
-                    )}
+                    render={props => <UserEdit {...props} operation="edit" />}
                   />
                   <Route
                     path="/users/new"
                     exact
-                    render={props => (
-                      <UserEdit
-                        {...props}
-                        operation="new"
-                        axios={this.state.axiosInstance}
-                      />
-                    )}
+                    render={props => <UserEdit {...props} operation="new" />}
                   />
-                  <Route
-                    path="/surveys"
-                    exact
-                    render={props => (
-                      <Surveys axios={this.state.axiosInstance} />
-                    )}
-                  />
+                  <Route path="/surveys" exact component={Surveys} />
                   <Route
                     path="/survey/edit/:id"
                     exact
-                    render={props => (
-                      <SurveyEdit
-                        {...props}
-                        operation="edit"
-                        axios={this.state.axiosInstance}
-                      />
-                    )}
+                    render={props => <SurveyEdit {...props} operation="edit" />}
                   />
                   <Route
                     path="/surveys/new"
                     exact
-                    render={props => (
-                      <SurveyEdit
-                        {...props}
-                        operation="new"
-                        axios={this.state.axiosInstance}
-                      />
-                    )}
+                    render={props => <SurveyEdit {...props} operation="new" />}
                   />
 
                   <Route
                     path="/survey/:surveyid/questions"
                     exact
-                    render={props => (
-                      <Questions {...props} axios={this.state.axiosInstance} />
-                    )}
+                    component={Questions}
                   />
                   <Route
                     path="/survey/:surveyid/question/edit/:questionid"
                     exact
                     render={props => (
-                      <QuestionEdit
-                        {...props}
-                        operation="edit"
-                        axios={this.state.axiosInstance}
-                      />
+                      <QuestionEdit {...props} operation="edit" />
                     )}
                   />
                   <Route
                     path="/survey/:surveyid/questions/new"
                     exact
                     render={props => (
-                      <QuestionEdit
-                        {...props}
-                        operation="new"
-                        axios={this.state.axiosInstance}
-                      />
+                      <QuestionEdit {...props} operation="new" />
                     )}
                   />
                   <Route
                     path="/survey/:surveyid/results"
                     exact
-                    render={props => (
-                      <Results {...props} axios={this.state.axiosInstance} />
-                    )}
+                    render={props => <Results {...props} />}
                   />
 
                   <Route

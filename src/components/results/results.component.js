@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 import styles from "../backoffice.module.css";
 
 export default class Results extends Component {
@@ -15,7 +16,7 @@ export default class Results extends Component {
     let res;
     const surveyId = this.props.match.params.surveyid;
     try {
-      res = await this.props.axios.get("/results/" + surveyId);
+      res = await axios.get("/results/" + surveyId);
       this.setState({
         results: res.data
       });
@@ -24,7 +25,7 @@ export default class Results extends Component {
     }
 
     try {
-      res = await this.props.axios.get("/surveys/" + surveyId);
+      res = await axios.get("/surveys/" + surveyId);
       this.setState({
         surveyName: res.data.name,
         questions: res.data.questions

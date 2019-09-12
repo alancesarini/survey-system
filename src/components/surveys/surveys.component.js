@@ -5,6 +5,7 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 import styles from "../backoffice.module.css";
 
 export default class Surveys extends Component {
@@ -19,7 +20,7 @@ export default class Surveys extends Component {
   componentDidMount = async () => {
     let res;
     try {
-      res = await this.props.axios.get("/surveys");
+      res = await axios.get("/surveys");
       this.setState({
         surveys: res.data
       });
@@ -30,7 +31,7 @@ export default class Surveys extends Component {
 
   removeSurvey = async surveyId => {
     try {
-      await this.props.axios.delete("/surveys/" + surveyId);
+      await axios.delete("/surveys/" + surveyId);
       const updatedSurveys = this.state.surveys.filter(
         survey => survey._id !== surveyId
       );

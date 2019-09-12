@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 import styles from "../backoffice.module.css";
 
 export default class Users extends Component {
@@ -17,7 +18,7 @@ export default class Users extends Component {
   componentDidMount = async () => {
     let res;
     try {
-      res = await this.props.axios.get("/users");
+      res = await axios.get("/users");
       this.setState({
         users: res.data
       });
@@ -28,7 +29,7 @@ export default class Users extends Component {
 
   removeUser = async userId => {
     try {
-      await this.props.axios.delete("/users/" + userId);
+      await axios.delete("/users/" + userId);
       const updatedUsers = this.state.users.filter(user => user._id !== userId);
       this.setState({ users: updatedUsers });
     } catch (e) {

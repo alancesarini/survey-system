@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { createBrowserHistory } from "history";
+import axios from "axios";
 import SurveyForm from "./survey_form.component";
 
 export default class SurveyEdit extends Component {
@@ -18,7 +19,7 @@ export default class SurveyEdit extends Component {
     if (this.props.operation === "edit") {
       const id = this.props.match.params.id;
       try {
-        const res = await this.props.axios.get("/surveys/" + id);
+        const res = await axios.get("/surveys/" + id);
         if (res.data) {
           this.setState({
             name: res.data.name
@@ -43,9 +44,9 @@ export default class SurveyEdit extends Component {
     try {
       let res = "";
       if (this.props.operation === "edit") {
-        res = await this.props.axios.patch("/surveys/" + id, this.state);
+        res = await axios.patch("/surveys/" + id, this.state);
       } else {
-        res = await this.props.axios.post("/surveys", this.state);
+        res = await axios.post("/surveys", this.state);
       }
       if (res.data) {
         this.history.goBack();

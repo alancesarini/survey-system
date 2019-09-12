@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { createBrowserHistory } from "history";
+import axios from "axios";
 import QuestionForm from "./question_form.component";
-import { Redirect } from "react-router-dom";
 
 export default class QuestionEdit extends Component {
   constructor() {
@@ -14,8 +14,7 @@ export default class QuestionEdit extends Component {
       question_text: "",
       min_value: 0,
       max_value: 0,
-      options: [],
-      redirect: null
+      options: []
     };
   }
 
@@ -27,7 +26,7 @@ export default class QuestionEdit extends Component {
       const questionId = this.props.match.params.questionid;
 
       try {
-        const res = await this.props.axios.get(
+        const res = await axios.get(
           "/surveys/" + surveyId + "/questions/" + questionId
         );
         if (res.data) {
@@ -126,19 +125,18 @@ export default class QuestionEdit extends Component {
     try {
       let res = "";
       if (this.props.operation === "edit") {
-        res = await this.props.axios.patch(url, data);
+        res = await axios.patch(url, data);
       } else {
-        res = await this.props.axios.post(url, data);
+        res = await axios.post(url, data);
       }
       if (res.data) {
-        this.setState({ redirect: "/survey/" + surveyId + "/questions" });
-        //this.history.push();
+        this.history.goBack();
       }
     } catch (e) {}
   };
 
   render() {
-    let component = (
+    return (
       <QuestionForm
         data={this.state}
         change={this.handleChange}
@@ -148,9 +146,5 @@ export default class QuestionEdit extends Component {
         options={this.state.options}
       />
     );
-    if (this.state.redirect) {
-      component = <Redirect to={this.state.redirect} />;
-    }
-    return component;
   }
 }

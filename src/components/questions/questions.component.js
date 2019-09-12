@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 import styles from "../backoffice.module.css";
 
 export default class Questions extends Component {
@@ -19,7 +20,7 @@ export default class Questions extends Component {
     const surveyId = this.props.match.params.surveyid;
 
     try {
-      res = await this.props.axios.get("/surveys/" + surveyId);
+      res = await axios.get("/surveys/" + surveyId);
       console.log(res);
       this.setState({
         surveyName: res.data.name,
@@ -32,9 +33,7 @@ export default class Questions extends Component {
 
   removeQuestion = async (surveyId, questionId) => {
     try {
-      await this.props.axios.delete(
-        "/surveys/" + surveyId + "/questions/" + questionId
-      );
+      await axios.delete("/surveys/" + surveyId + "/questions/" + questionId);
       const updatedQuestions = this.state.questions.filter(
         question => question._id !== questionId
       );
