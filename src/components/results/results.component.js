@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import styles from "../backoffice.module.css";
 
 export default class Results extends Component {
@@ -8,11 +9,15 @@ export default class Results extends Component {
 
     this.state = {
       questions: [],
-      results: []
+      results: [],
+      loading: false,
+      error: null
     };
   }
 
   componentDidMount = async () => {
+    this.setState({ loading: true });
+
     let res;
     const surveyId = this.props.match.params.surveyid;
     try {
@@ -21,17 +26,23 @@ export default class Results extends Component {
         results: res.data
       });
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
+    } finally {
+      this.setState({ loading: false });
     }
 
     try {
+      this.setState({ loading: true });
+
       res = await axios.get("/surveys/" + surveyId);
       this.setState({
         surveyName: res.data.name,
         questions: res.data.questions
       });
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
@@ -213,13 +224,24 @@ export default class Results extends Component {
       html.push(htmlQuestion);
     });
 
+    let feedback = "";
+    if (this.state.loading) {
+      feedback = <CircularProgress />;
+    }
+    if (this.state.error) {
+      feedback = this.state.error;
+    }
+
     return (
-      <div className={styles.surveyResults}>
-        <h5>Results for the survey "{this.state.surveyName}"</h5>
-        {html.map(item => {
-          return item;
-        })}
-      </div>
+      <>
+        <div className={styles.surveyResults}>
+          <h5>Results for the survey "{this.state.surveyName}"</h5>
+          {html.map(item => {
+            return item;
+          })}
+        </div>
+        <div className={styles.feedback}>{feedback}</div>
+      </>
     );
   }
 }

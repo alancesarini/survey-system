@@ -26,6 +26,12 @@
   box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.1);    
 }
 
+.feedback {
+	text-align: center;
+	color: red;
+	font-weight: bold;
+}
+
 .table {
   width: 100%;
   display: table;

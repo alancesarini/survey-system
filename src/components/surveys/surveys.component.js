@@ -6,6 +6,7 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import styles from "../backoffice.module.css";
 
 export default class Surveys extends Component {
@@ -13,11 +14,14 @@ export default class Surveys extends Component {
     super(props);
 
     this.state = {
-      surveys: []
+      surveys: [],
+      loading: false,
+      error: null
     };
   }
 
   componentDidMount = async () => {
+    this.setState({ loading: true });
     let res;
     try {
       res = await axios.get("/surveys");
@@ -25,24 +29,29 @@ export default class Surveys extends Component {
         surveys: res.data
       });
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
   removeSurvey = async surveyId => {
     try {
+      this.setState({ loading: true });
       await axios.delete("/surveys/" + surveyId);
       const updatedSurveys = this.state.surveys.filter(
         survey => survey._id !== surveyId
       );
       this.setState({ surveys: updatedSurveys });
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
   render() {
-    const surveys = this.state.surveys.map((survey, index) => {
+    let surveys = this.state.surveys.map((survey, index) => {
       return (
         <div className={styles.row} key={index}>
           <div className={styles.cell}>
@@ -75,6 +84,14 @@ export default class Surveys extends Component {
       );
     });
 
+    let feedback = "";
+    if (this.state.loading) {
+      feedback = <CircularProgress />;
+    }
+    if (this.state.error) {
+      feedback = this.state.error;
+    }
+
     return (
       <div className={styles.limiter}>
         <div className={styles.container_table100}>
@@ -92,6 +109,7 @@ export default class Surveys extends Component {
             </div>
           </div>
         </div>
+        <div className={styles.feedback}>{feedback}</div>
       </div>
     );
   }

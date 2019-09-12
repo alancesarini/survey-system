@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import styles from "../backoffice.module.css";
 
 export default class Users extends Component {
@@ -11,11 +12,15 @@ export default class Users extends Component {
     super(props);
 
     this.state = {
-      users: []
+      users: [],
+      loading: false,
+      error: null
     };
   }
 
   componentDidMount = async () => {
+    this.setState({ loading: true });
+
     let res;
     try {
       res = await axios.get("/users");
@@ -23,21 +28,35 @@ export default class Users extends Component {
         users: res.data
       });
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
   removeUser = async userId => {
+    this.setState({ loading: true });
+
     try {
       await axios.delete("/users/" + userId);
       const updatedUsers = this.state.users.filter(user => user._id !== userId);
       this.setState({ users: updatedUsers });
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
   render() {
+    let feedback = "";
+    if (this.state.loading) {
+      feedback = <CircularProgress />;
+    }
+    if (this.state.error) {
+      feedback = this.state.error;
+    }
+
     const users = this.state.users.map((user, index) => {
       return (
         <div className={styles.row} key={index}>
@@ -72,6 +91,7 @@ export default class Users extends Component {
             </div>
           </div>
         </div>
+        <div className={styles.feedback}>{feedback}</div>
       </div>
     );
   }

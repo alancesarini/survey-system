@@ -3,6 +3,7 @@ import axios from "axios";
 import { createBrowserHistory } from "history";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import styles from "../backoffice.module.css";
 
 export default class Login extends Component {
@@ -63,6 +64,15 @@ export default class Login extends Component {
   };
 
   render() {
+    let feedback = "";
+    if (this.state.loading) {
+      feedback = <CircularProgress />;
+    }
+
+    if (this.state.error) {
+      feedback = <p>Identification failed!</p>;
+    }
+
     const form = (
       <div className={styles.limiter}>
         <div className={styles.container_table100}>
@@ -96,29 +106,10 @@ export default class Login extends Component {
             </div>
           </form>
         </div>
+        <div className={styles.feedback}>{feedback}</div>
       </div>
     );
 
-    let page = form;
-
-    if (this.state.loading) {
-      page = (
-        <div>
-          {form}
-          <p>Logging in...</p>
-        </div>
-      );
-    }
-
-    if (this.state.error) {
-      page = (
-        <div>
-          {form}
-          <p>Identification failed!</p>
-        </div>
-      );
-    }
-
-    return page;
+    return form;
   }
 }

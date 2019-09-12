@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import styles from "../backoffice.module.css";
 
 export default class Questions extends Component {
@@ -11,11 +12,15 @@ export default class Questions extends Component {
     super(props);
 
     this.state = {
-      questions: []
+      questions: [],
+      loading: false,
+      error: null
     };
   }
 
   componentDidMount = async () => {
+    this.setState({ loading: true });
+
     let res;
     const surveyId = this.props.match.params.surveyid;
 
@@ -27,11 +32,15 @@ export default class Questions extends Component {
         questions: res.data.questions
       });
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
   removeQuestion = async (surveyId, questionId) => {
+    this.setState({ loading: true });
+
     try {
       await axios.delete("/surveys/" + surveyId + "/questions/" + questionId);
       const updatedQuestions = this.state.questions.filter(
@@ -39,11 +48,21 @@ export default class Questions extends Component {
       );
       this.setState({ questions: updatedQuestions });
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
   render() {
+    let feedback = "";
+    if (this.state.loading) {
+      feedback = <CircularProgress />;
+    }
+    if (this.state.error) {
+      feedback = this.state.error;
+    }
+
     const surveyId = this.props.match.params.surveyid;
     const questions = this.state.questions.map((question, index) => {
       return (
@@ -70,6 +89,7 @@ export default class Questions extends Component {
             <Link to={"/survey/" + surveyId + "/questions/new"}>
               add a new question
             </Link>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </p>
           <div className={styles.wrap_table100}>
             <div className={styles.table}>
@@ -81,6 +101,7 @@ export default class Questions extends Component {
             </div>
           </div>
         </div>
+        <div className={styles.feedback}>{feedback}</div>
       </div>
     );
   }
