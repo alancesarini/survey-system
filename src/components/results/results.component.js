@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import styles from "../backoffice.module.css";
+import Feedback from "../feedback.component";
 
 export default class Results extends Component {
   constructor(props) {
@@ -224,14 +224,6 @@ export default class Results extends Component {
       html.push(htmlQuestion);
     });
 
-    let feedback = "";
-    if (this.state.loading) {
-      feedback = <CircularProgress />;
-    }
-    if (this.state.error) {
-      feedback = this.state.error;
-    }
-
     return (
       <>
         <div className={styles.surveyResults}>
@@ -240,7 +232,7 @@ export default class Results extends Component {
             return item;
           })}
         </div>
-        <div className={styles.feedback}>{feedback}</div>
+        <Feedback loading={this.state.loading} error={this.state.error} />
       </>
     );
   }

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { createBrowserHistory } from "history";
 import axios from "axios";
 import QuestionForm from "./question_form.component";
+import Feedback from "../feedback.component";
 
 export default class QuestionEdit extends Component {
   constructor() {
@@ -14,7 +15,9 @@ export default class QuestionEdit extends Component {
       question_text: "",
       min_value: 0,
       max_value: 0,
-      options: []
+      options: [],
+      loading: false,
+      error: null
     };
   }
 
@@ -22,6 +25,8 @@ export default class QuestionEdit extends Component {
 
   componentDidMount = async () => {
     if (this.props.operation === "edit") {
+      this.setState({ loading: true });
+
       const surveyId = this.props.match.params.surveyid;
       const questionId = this.props.match.params.questionid;
 
@@ -47,7 +52,11 @@ export default class QuestionEdit extends Component {
             options: options
           });
         }
-      } catch (e) {}
+      } catch (e) {
+        this.setState({ error: e.toString(), loading: false });
+      } finally {
+        this.setState({ loading: false });
+      }
     }
   };
 
@@ -103,6 +112,8 @@ export default class QuestionEdit extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
+    this.setState({ loading: true });
+
     const data = {
       question_type: this.state.question_type,
       question_text: this.state.question_text,
@@ -132,19 +143,24 @@ export default class QuestionEdit extends Component {
       if (res.data) {
         this.history.goBack();
       }
-    } catch (e) {}
+    } catch (e) {
+      this.setState({ error: e.toString(), loading: false });
+    }
   };
 
   render() {
     return (
-      <QuestionForm
-        data={this.state}
-        change={this.handleChange}
-        submit={this.handleSubmit}
-        addOption={this.handleAddOption}
-        removeOption={this.handleRemoveOption}
-        options={this.state.options}
-      />
+      <>
+        <QuestionForm
+          data={this.state}
+          change={this.handleChange}
+          submit={this.handleSubmit}
+          addOption={this.handleAddOption}
+          removeOption={this.handleRemoveOption}
+          options={this.state.options}
+        />
+        <Feedback loading={this.state.loading} error={this.state.error} />
+      </>
     );
   }
 }

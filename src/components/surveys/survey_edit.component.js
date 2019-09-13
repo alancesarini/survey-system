@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { createBrowserHistory } from "history";
 import axios from "axios";
 import SurveyForm from "./survey_form.component";
+import Feedback from "../feedback.component";
 
 export default class SurveyEdit extends Component {
   constructor() {
@@ -9,7 +10,9 @@ export default class SurveyEdit extends Component {
     this.handleChange = this.handleChange.bind(this);
 
     this.state = {
-      name: ""
+      name: "",
+      loading: false,
+      error: null
     };
   }
 
@@ -17,6 +20,8 @@ export default class SurveyEdit extends Component {
 
   componentDidMount = async () => {
     if (this.props.operation === "edit") {
+      this.setState({ loading: true });
+
       const id = this.props.match.params.id;
       try {
         const res = await axios.get("/surveys/" + id);
@@ -26,7 +31,9 @@ export default class SurveyEdit extends Component {
           });
         }
       } catch (e) {
-        console.log(e);
+        this.setState({ error: e.toString(), loading: false });
+      } finally {
+        this.setState({ loading: false });
       }
     }
   };
@@ -42,6 +49,8 @@ export default class SurveyEdit extends Component {
     const id = this.props.match.params.id;
 
     try {
+      this.setState({ loading: true });
+
       let res = "";
       if (this.props.operation === "edit") {
         res = await axios.patch("/surveys/" + id, this.state);
@@ -52,17 +61,20 @@ export default class SurveyEdit extends Component {
         this.history.goBack();
       }
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
     }
   };
 
   render() {
     return (
-      <SurveyForm
-        data={this.state}
-        change={this.handleChange}
-        submit={this.handleSubmit}
-      />
+      <>
+        <SurveyForm
+          data={this.state}
+          change={this.handleChange}
+          submit={this.handleSubmit}
+        />
+        <Feedback loading={this.state.loading} error={this.state.error} />
+      </>
     );
   }
 }

@@ -6,8 +6,8 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import styles from "../backoffice.module.css";
+import Feedback from "../feedback.component";
 
 export default class Surveys extends Component {
   constructor(props) {
@@ -84,14 +84,6 @@ export default class Surveys extends Component {
       );
     });
 
-    let feedback = "";
-    if (this.state.loading) {
-      feedback = <CircularProgress />;
-    }
-    if (this.state.error) {
-      feedback = this.state.error;
-    }
-
     return (
       <div className={styles.limiter}>
         <div className={styles.container_table100}>
@@ -109,7 +101,7 @@ export default class Surveys extends Component {
             </div>
           </div>
         </div>
-        <div className={styles.feedback}>{feedback}</div>
+        <Feedback loading={this.state.loading} error={this.state.error} />
       </div>
     );
   }

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { createBrowserHistory } from "history";
 import axios from "axios";
 import UserForm from "./user_form.component";
+import Feedback from "../feedback.component";
 
 export default class UserEdit extends Component {
   constructor() {
@@ -11,7 +12,9 @@ export default class UserEdit extends Component {
     this.state = {
       name: "",
       email: "",
-      password: ""
+      password: "",
+      loading: false,
+      error: null
     };
   }
 
@@ -19,6 +22,8 @@ export default class UserEdit extends Component {
 
   componentDidMount = async () => {
     if (this.props.operation === "edit") {
+      this.setState({ loading: true });
+
       const id = this.props.match.params.id;
       try {
         const res = await axios.get("/users/" + id);
@@ -30,7 +35,9 @@ export default class UserEdit extends Component {
           });
         }
       } catch (e) {
-        console.log(e);
+        this.setState({ error: e.toString(), loading: false });
+      } finally {
+        this.setState({ loading: false });
       }
     }
   };
@@ -45,6 +52,8 @@ export default class UserEdit extends Component {
     e.preventDefault();
     const id = this.props.match.params.id;
     try {
+      this.setState({ loading: true });
+
       let res = "";
       if (this.props.operation === "edit") {
         res = await axios.patch("/users/" + id, this.state);
@@ -55,17 +64,20 @@ export default class UserEdit extends Component {
         this.history.goBack();
       }
     } catch (e) {
-      console.log(e);
+      this.setState({ error: e.toString(), loading: false });
     }
   };
 
   render() {
     return (
-      <UserForm
-        data={this.state}
-        change={this.handleChange}
-        submit={this.handleSubmit}
-      />
+      <>
+        <UserForm
+          data={this.state}
+          change={this.handleChange}
+          submit={this.handleSubmit}
+        />
+        <Feedback loading={this.state.loading} error={this.state.error} />
+      </>
     );
   }
 }

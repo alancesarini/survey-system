@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import styles from "../backoffice.module.css";
+import Feedback from "../feedback.component";
 
 export default class Questions extends Component {
   constructor(props) {
@@ -55,14 +55,6 @@ export default class Questions extends Component {
   };
 
   render() {
-    let feedback = "";
-    if (this.state.loading) {
-      feedback = <CircularProgress />;
-    }
-    if (this.state.error) {
-      feedback = this.state.error;
-    }
-
     const surveyId = this.props.match.params.surveyid;
     const questions = this.state.questions.map((question, index) => {
       return (
@@ -101,7 +93,7 @@ export default class Questions extends Component {
             </div>
           </div>
         </div>
-        <div className={styles.feedback}>{feedback}</div>
+        <Feedback loading={this.state.loading} error={this.state.error} />
       </div>
     );
   }

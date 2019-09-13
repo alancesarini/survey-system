@@ -3,8 +3,8 @@ import axios from "axios";
 import { createBrowserHistory } from "history";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import styles from "../backoffice.module.css";
+import Feedback from "../feedback.component";
 
 export default class Login extends Component {
   constructor() {
@@ -38,10 +38,9 @@ export default class Login extends Component {
     try {
       res = await axios.post("/users/login", loginData);
     } catch (e) {
-      console.log(e);
       this.setState({
         loading: false,
-        error: true
+        error: e.toString()
       });
     }
 
@@ -64,15 +63,6 @@ export default class Login extends Component {
   };
 
   render() {
-    let feedback = "";
-    if (this.state.loading) {
-      feedback = <CircularProgress />;
-    }
-
-    if (this.state.error) {
-      feedback = <p>Identification failed!</p>;
-    }
-
     const form = (
       <div className={styles.limiter}>
         <div className={styles.container_table100}>
@@ -106,7 +96,7 @@ export default class Login extends Component {
             </div>
           </form>
         </div>
-        <div className={styles.feedback}>{feedback}</div>
+        <Feedback loading={this.state.loading} error={this.state.error} />
       </div>
     );
 
